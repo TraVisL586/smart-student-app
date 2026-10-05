@@ -1,0 +1,12 @@
+{
+  "name":"Smart Student – Bùi Thu Ngân",
+  "short_name":"Smart Student",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f5faf8",
+  "theme_color":"#0f8b72",
+  "lang":"vi",
+  "icons":[
+    {"src":"./assets/smart-student-icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
