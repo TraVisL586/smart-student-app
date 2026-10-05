@@ -122,6 +122,162 @@
 .puzzle-result-list{display:grid;gap:8px;margin-top:12px}
 .position-chip{display:inline-flex;align-items:center;gap:5px;margin-top:5px}
 @media(max-width:600px){.escape-code-panel{grid-template-columns:repeat(2,minmax(110px,1fr))}.word-grid{grid-template-columns:repeat(12,minmax(18px,1fr));gap:3px}.word-cell{font-size:12px;border-radius:6px}}
+
+/* ==================== SMOOTH ANIMATIONS & UI/UX POLISH ==================== */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page {
+  animation: fadeInPage 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalBackdrop {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(8px); }
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.93) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal.show {
+  animation: modalBackdrop 0.25s ease-out forwards;
+}
+.modal.show .modalbox {
+  animation: modalPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes turtleFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(1.2deg); }
+}
+.brand-turtle svg, .mascot-inline svg {
+  animation: turtleFloat 3.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes bubblePop {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.bubble {
+  animation: bubblePop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseThinking {
+  0%, 100% { opacity: 0.65; transform: scale(0.99); }
+  50% { opacity: 1; transform: scale(1.01); filter: brightness(1.08); }
+}
+#typing, #groupThinking {
+  animation: pulseThinking 1.4s ease-in-out infinite !important;
+}
+
+@keyframes toastSpring {
+  0% { opacity: 0; transform: translateY(35px) scale(0.85); }
+  65% { opacity: 1; transform: translateY(-3px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast.show {
+  animation: toastSpring 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  box-shadow: 0 16px 36px rgba(11, 43, 38, 0.28);
+}
+
+.btn {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+  position: relative;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 139, 114, 0.25);
+  filter: brightness(1.03);
+}
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.card, .stat {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(11, 107, 89, 0.08);
+}
+.list-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.list-card:hover {
+  transform: translateX(4px);
+  border-color: var(--green);
+  box-shadow: 0 4px 12px rgba(15, 139, 114, 0.08);
+}
+
+.nav button {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.nav button:hover {
+  transform: translateX(5px);
+}
+.nav button:hover .ico {
+  transform: scale(1.22) rotate(-6deg);
+}
+.nav .ico {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav button.active {
+  box-shadow: 0 4px 14px rgba(15, 139, 114, 0.16);
+}
+
+.chip {
+  transition: all 0.2s ease;
+}
+.chip:hover {
+  background: var(--lime);
+  color: var(--green2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(15, 139, 114, 0.12);
+}
+
+.tabs button {
+  transition: all 0.2s ease;
+}
+.tabs button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.radial {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+}
+.radial:hover {
+  transform: scale(1.06);
+  filter: drop-shadow(0 8px 16px rgba(15, 139, 114, 0.22));
+}
+
+.answer {
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.answer:hover {
+  transform: translateX(3px);
+}
+.answer.correct {
+  animation: answerCorrect 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes answerCorrect {
+  0% { transform: scale(0.97); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.answer.wrong {
+  animation: answerShake 0.4s ease-in-out;
+}
+@keyframes answerShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
 </style>
 </head>
 <body>
