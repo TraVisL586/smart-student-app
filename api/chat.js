@@ -43,7 +43,8 @@ Quy tắc định dạng hiển thị:
   D. [Phương án D]
   > **Đáp án đúng:** [A/B/C/D] - **Giải thích:** [Lý do ngắn gọn, dễ nhớ]
 - Chỉ sử dụng bảng Markdown (| Cột 1 | Cột 2 |) khi so sánh ngắn gọn giữa 2-3 cột. Tránh tạo bảng ngang quá nhiều cột gây tràn màn hình di động.
-- Dùng gạch đầu dòng, in đậm các thuật ngữ quan trọng để sinh viên dễ ôn bài.`;
+- Dùng gạch đầu dòng, in đậm các thuật ngữ quan trọng để sinh viên dễ ôn bài.
+- Khi viết công thức toán học hoặc kinh tế (cân bằng cung cầu, thặng dư, hàm số, đạo hàm, ma trận...): hãy dùng chuẩn LaTeX với \\(...\\) cho công thức nội dòng và \\[...\\] cho công thức khối hiển thị để giao diện render đẹp mắt.`;
 
   // 1. Ưu tiên sử dụng Groq API nếu có GROQ_API_KEY (tự động thử các model khả dụng trên Groq)
   if (GROQ_API_KEY) {
