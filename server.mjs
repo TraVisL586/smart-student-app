@@ -135,7 +135,10 @@ const server=http.createServer(async(req,res)=>{
     const openaiKey = process.env.OPENAI_API_KEY || '';
     const provider = groqKey ? 'groq' : (openaiKey ? 'openai' : 'none');
     const model = groqKey ? (process.env.GROQ_MODEL || 'openai/gpt-oss-120b') : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
-    return json(res,200,{ok:true,aiConfigured:Boolean(groqKey||openaiKey),provider,model});
+    let dirFiles = [], cwdFiles = [];
+    try { dirFiles = fs.readdirSync(__dirname); } catch (e) { dirFiles = [e.message]; }
+    try { cwdFiles = fs.readdirSync(process.cwd()); } catch (e) { cwdFiles = [e.message]; }
+    return json(res,200,{ok:true,aiConfigured:Boolean(groqKey||openaiKey),provider,model,__dirname,cwd:process.cwd(),dirFiles,cwdFiles});
   }
   if(req.method==='POST'&&req.url==='/api/chat')return chat(req,res);
   if(req.method==='GET'||req.method==='HEAD')return serveStatic(req,res);
