@@ -117,7 +117,7 @@ function serveStatic(req,res){
   const target=path.resolve(__dirname,'.'+pathname);
   if(!target.startsWith(path.resolve(__dirname)))return send(res,403,'Forbidden','text/plain; charset=utf-8');
   fs.stat(target,(err,st)=>{
-    if(err||!st.isFile())return send(res,404,'Not found','text/plain; charset=utf-8');
+    if(err||!st.isFile())return send(res,404,`Not found: ${err ? err.message : 'not file'} | target: ${target} | __dirname: ${__dirname}`,'text/plain; charset=utf-8');
     const ext=path.extname(target).toLowerCase();
     res.writeHead(200,{'Content-Type':mime[ext]||'application/octet-stream','Cache-Control':'no-cache'});
     fs.createReadStream(target).pipe(res);
