@@ -110,14 +110,23 @@ async function chat(req,res){
   }
 }
 
+const SW_SCRIPT = `const CACHE='smart-student-v33';
+const CORE=['/','/index.html','/manifest.webmanifest','/assets/turtle-mascot.webp','/assets/turtle-mascot.png','/assets/smart-student-icon.png','/assets/reward-ueh-polo.png','/assets/reward-ueh-notebook.png','/assets/reward-ueh-keychain.png','/assets/reward-ueh-tote.png'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('/index.html'))));});
+`;
+
 function serveStatic(req,res){
   let pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   if(pathname==='/'||pathname==='')pathname='/index.html';
   if(pathname==='/favicon.ico')pathname='/assets/smart-student-icon.png';
+  if(pathname==='/sw.js') return send(res, 200, SW_SCRIPT, 'application/javascript; charset=utf-8');
+
   const target=path.resolve(__dirname,'.'+pathname);
   if(!target.startsWith(path.resolve(__dirname)))return send(res,403,'Forbidden','text/plain; charset=utf-8');
   fs.stat(target,(err,st)=>{
-    if(err||!st.isFile())return send(res,404,`Not found: ${err ? err.message : 'not file'} | target: ${target} | __dirname: ${__dirname}`,'text/plain; charset=utf-8');
+    if(err||!st.isFile())return send(res,404,'Not found','text/plain; charset=utf-8');
     const ext=path.extname(target).toLowerCase();
     res.writeHead(200,{'Content-Type':mime[ext]||'application/octet-stream','Cache-Control':'no-cache'});
     fs.createReadStream(target).pipe(res);
