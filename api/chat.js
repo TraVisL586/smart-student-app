@@ -31,36 +31,45 @@ export default async function handler(req, res) {
 
   const instructions = `Bạn là Smart AI, trợ lý học tập của Smart Student dành cho sinh viên đại học Việt Nam.\nMôn học hiện tại: ${course}.\nTrả lời bằng tiếng Việt, rõ ràng, thân thiện, ưu tiên giải thích từng bước và ví dụ. Nếu là bài tập, hãy giải thích cách làm thay vì chỉ nêu đáp án. Không bịa nguồn hoặc dữ kiện. Nếu không đủ thông tin, nói rõ cần thêm dữ kiện.`;
 
-  // 1. Ưu tiên sử dụng Groq API nếu có GROQ_API_KEY (tốc độ cao, miễn phí)
+  // 1. Ưu tiên sử dụng Groq API nếu có GROQ_API_KEY (tự động thử các model khả dụng trên Groq)
   if (GROQ_API_KEY) {
-    const groqModel = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
-    try {
-      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: groqModel,
-          messages: [
-            { role: 'system', content: instructions },
-            { role: 'user', content: message }
-          ],
-          max_tokens: 1024,
-          temperature: 0.6
-        })
-      });
+    const candidateModels = [
+      process.env.GROQ_MODEL,
+      'openai/gpt-oss-120b',
+      'openai/gpt-oss-20b',
+      'qwen/qwen3.8-27b'
+    ].filter(Boolean);
 
-      const data = await r.json();
-      if (!r.ok) {
-        return res.status(r.status).json({ error: data?.error?.message || 'Groq API request failed' });
+    let lastError = '';
+    for (const model of candidateModels) {
+      try {
+        const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: instructions },
+              { role: 'user', content: message }
+            ],
+            max_tokens: 1024,
+            temperature: 0.6
+          })
+        });
+
+        const data = await r.json();
+        if (r.ok && data?.choices?.[0]?.message?.content) {
+          return res.status(200).json({ answer: data.choices[0].message.content });
+        }
+        lastError = data?.error?.message || `Lỗi model ${model}`;
+      } catch (err) {
+        lastError = err.message;
       }
-      const answer = data?.choices?.[0]?.message?.content || 'AI không trả về nội dung.';
-      return res.status(200).json({ answer });
-    } catch (err) {
-      return res.status(502).json({ error: `Không kết nối được Groq AI: ${err.message}` });
     }
+    return res.status(502).json({ error: `Groq AI error: ${lastError}` });
   }
 
   // 2. Sử dụng OpenAI API nếu có OPENAI_API_KEY
