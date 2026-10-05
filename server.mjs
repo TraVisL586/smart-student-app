@@ -105,6 +105,19 @@ function serveStatic(req,res){
 }
 
 const server=http.createServer(async(req,res)=>{
+  if(req.method==='GET'&&req.url.startsWith('/api/models')){
+    const groqKey = process.env.GROQ_API_KEY || '';
+    if(!groqKey) return json(res, 503, {error: 'No GROQ_API_KEY'});
+    try {
+      const r = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { 'Authorization': `Bearer ${groqKey}` }
+      });
+      const d = await r.json();
+      return json(res, r.status, d);
+    } catch (err) {
+      return json(res, 500, {error: err.message});
+    }
+  }
   if(req.method==='GET'&&req.url.startsWith('/api/health')){
     const groqKey = process.env.GROQ_API_KEY || '';
     const openaiKey = process.env.OPENAI_API_KEY || '';
