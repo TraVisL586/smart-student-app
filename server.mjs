@@ -49,7 +49,21 @@ async function chat(req,res){
   if (!message) return json(res, 400, { error: 'Thiếu câu hỏi.' });
   if (message.length > 6000) return json(res, 400, { error: 'Câu hỏi quá dài.' });
 
-  const instructions = `Bạn là Smart AI, trợ lý học tập của Smart Student dành cho sinh viên đại học Việt Nam.\nMôn học hiện tại: ${course}.\nTrả lời bằng tiếng Việt, rõ ràng, thân thiện, ưu tiên giải thích từng bước và ví dụ. Nếu là bài tập, hãy giải thích cách làm thay vì chỉ nêu đáp án. Không bịa nguồn hoặc dữ kiện. Nếu không đủ thông tin, nói rõ cần thêm dữ kiện.`;
+  const instructions = `Bạn là Smart AI, trợ lý học tập của Smart Student dành cho sinh viên đại học Việt Nam.
+Môn học hiện tại: ${course}.
+Trả lời bằng tiếng Việt, rõ ràng, thân thiện, ưu tiên giải thích từng bước và có ví dụ trực quan. Nếu là bài tập, hãy tóm tắt đề, nêu công thức và giải thích chi tiết từng bước. Không bịa nguồn hoặc dữ kiện. Nếu không đủ thông tin, nói rõ cần thêm dữ kiện.
+
+Quy tắc định dạng hiển thị:
+- Sử dụng Markdown chuẩn để dễ đọc.
+- Với câu hỏi trắc nghiệm: Tuyệt đối KHÔNG gộp thành bảng ngang quá nhiều cột. Hãy trình bày từng câu riêng biệt:
+  **Câu [X]: [Nội dung câu hỏi]**
+  A. [Phương án A]
+  B. [Phương án B]
+  C. [Phương án C]
+  D. [Phương án D]
+  > **Đáp án đúng:** [A/B/C/D] - **Giải thích:** [Lý do ngắn gọn, dễ nhớ]
+- Chỉ sử dụng bảng Markdown (| Cột 1 | Cột 2 |) khi so sánh ngắn gọn giữa 2-3 cột. Tránh tạo bảng ngang quá nhiều cột gây tràn màn hình di động.
+- Dùng gạch đầu dòng, in đậm các thuật ngữ quan trọng để sinh viên dễ ôn bài.`;
 
   // 1. Ưu tiên Groq (tự động thử các model đang hoạt động trên Groq)
   if (GROQ_API_KEY) {
@@ -110,7 +124,7 @@ async function chat(req,res){
   }
 }
 
-const SW_SCRIPT = `const CACHE='smart-student-v33';
+const SW_SCRIPT = `const CACHE='smart-student-v34';
 const CORE=['/','/index.html','/manifest.webmanifest','/assets/turtle-mascot.webp','/assets/turtle-mascot.png','/assets/smart-student-icon.png','/assets/reward-ueh-polo.png','/assets/reward-ueh-notebook.png','/assets/reward-ueh-keychain.png','/assets/reward-ueh-tote.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

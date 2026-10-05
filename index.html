@@ -278,6 +278,155 @@
   20%, 60% { transform: translateX(-5px); }
   40%, 80% { transform: translateX(5px); }
 }
+
+/* ==================== MARKDOWN RENDERING & FLOW CARDS ==================== */
+.bubble.ai {
+  line-height: 1.6;
+  max-width: 90% !important;
+  color: var(--ink);
+}
+.bubble.ai .md-p {
+  margin: 6px 0;
+  line-height: 1.6;
+}
+.bubble.ai .md-h2, .bubble.ai .md-h3, .bubble.ai .md-h4 {
+  margin: 14px 0 6px;
+  color: var(--green2);
+  font-weight: 800;
+}
+.bubble.ai .md-h2 { font-size: 16px; border-bottom: 2px solid rgba(15, 139, 114, 0.2); padding-bottom: 4px; }
+.bubble.ai .md-h3 { font-size: 15px; }
+.bubble.ai .md-h4 { font-size: 14px; }
+.bubble.ai .md-ul, .bubble.ai .md-ol {
+  margin: 6px 0;
+  padding-left: 22px;
+}
+.bubble.ai .md-ul li, .bubble.ai .md-ol li {
+  margin: 4px 0;
+}
+.bubble.ai .md-quote {
+  border-left: 4px solid var(--green);
+  background: rgba(15, 139, 114, 0.08);
+  padding: 8px 14px;
+  margin: 10px 0;
+  border-radius: 0 10px 10px 0;
+  color: #1b493e;
+  font-size: 13px;
+}
+.bubble.ai .md-inline-code {
+  background: rgba(15, 139, 114, 0.12);
+  color: var(--green2);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+.bubble.ai .md-code {
+  background: #18322d;
+  color: #edf8f4;
+  padding: 12px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  margin: 10px 0;
+}
+.bubble.ai .code-header {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #79a89c;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 3px;
+  letter-spacing: 1px;
+}
+.bubble.ai .md-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 12px 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(11, 43, 38, 0.04);
+}
+.bubble.ai .md-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+}
+.bubble.ai .md-table th {
+  background: var(--mint);
+  color: var(--green2);
+  font-weight: 750;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.bubble.ai .md-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  background: #fff;
+}
+.bubble.ai .md-table tr:last-child td {
+  border-bottom: none;
+}
+.bubble.ai .md-table tr:nth-child(even) td {
+  background: #f8fbf9;
+}
+.bubble.ai .bubble-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(15, 139, 114, 0.2);
+}
+.bubble.ai .bubble-tools button {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+.bubble.ai .bubble-tools button:hover {
+  background: var(--mint);
+  color: var(--green2);
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+.flow-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.flow-card:hover {
+  border-color: var(--green);
+  background: var(--mint);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(15, 139, 114, 0.1);
+}
+.flow-card-icon {
+  font-size: 28px;
+  min-width: 40px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -326,13 +475,232 @@ function renderHome(){const done=state.todos.filter(x=>x.done).length,total=Math
 function stat(i,l,v,s){return `<div class="stat"><div class="row"><span style="font-size:22px">${i}</span><span class="small muted">${s}</span></div><div class="label">${l}</div><div class="value">${v}</div></div>`}
 function today(){return new Date().toISOString().slice(0,10)}
 function upcomingNotice(){let items=[...state.schedules.map(x=>({date:x.date||today(),title:x.subject,type:'Lịch học'})),...state.exams.map(x=>({date:x.date,title:'Thi '+x.subject,type:'Lịch thi'})),...state.deadlines.map(x=>({date:x.date,title:x.title,type:'Deadline'}))].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,3);return items.map(x=>`<div class="list-card"><div><b>${esc(x.title)}</b><div class="small muted">${x.type} · ${x.date}</div></div><span>🔔</span></div>`).join('')||'<div class="small muted">Chưa có lịch sắp tới.</div>'}
-function renderAI(){const hist=state.chatHistory||[];document.getElementById('content').innerHTML=`<div class="page">${homeBack()}<div class="row"><div><h1 class="page-title">AI học tập</h1><p class="muted">Hỏi bài, tạo 10 câu trắc nghiệm, lập kế hoạch, kiểm tra tiểu luận và phân tích năng lực.</p></div><span class="chip">🤖 Smart AI</span></div><div class="toolbar"><div class="tabs"><button class="active">Hỏi AI</button><button onclick="aiTool('quiz')">Tạo 10 câu trắc nghiệm</button><button onclick="aiTool('plan')">Lập kế hoạch</button><button onclick="aiTool('essay')">Sửa tiểu luận</button><button onclick="aiTool('aiPercent')">Check % AI</button><button onclick="aiTool('analysis')">Phân tích năng lực</button></div></div><div class="chat card"><aside class="history"><b>Lịch sử trò chuyện</b><div class="small muted" style="margin:7px 0">Được lưu tự động</div>${hist.slice().reverse().map((h,i)=>`<button class="${i===0?'active':''}" onclick="loadChat('${esc(h.id)}')">💬 ${esc(h.title)}</button>`).join('')||'<div class="small muted">Chưa có cuộc trò chuyện.</div>'}<div class="section-title"><h3>Gợi ý</h3></div>${['Giải thích cung và cầu','Tạo 10 câu trắc nghiệm','Lập kế hoạch ôn Tiếng Anh','Phân tích năng lực'].map(x=>`<button onclick="document.getElementById('aiInput').value='${x}'">✨ ${x}</button>`).join('')}</aside><div class="chatmain"><div class="row"><div><b>Smart AI</b><div class="small muted">Môn hiện tại: <span id="aiCourseLabel">${currentSubject}</span></div></div><select id="aiCourse" onchange="currentSubject=this.value;document.getElementById('aiCourseLabel').textContent=this.value">${SUBJECTS.map(s=>`<option ${s===currentSubject?'selected':''}>${s}</option>`).join('')}</select></div><div class="messages" id="messages"><div class="bubble ai">Xin chào Ngân 👋 Chọn môn học rồi hỏi mình bất cứ nội dung bài học nào.</div></div><div class="chips" style="margin:8px 0">${['Giải thích bài này cho tôi','Tạo 10 câu trắc nghiệm','Lập kế hoạch học tập','Phân tích năng lực'].map(x=>`<button class="chip" onclick="setPrompt('${x}')">${x}</button>`).join('')}</div><div class="composer"><textarea id="aiInput" rows="2" placeholder="Ví dụ: Giải thích độ co giãn của cầu..."></textarea><button class="btn" onclick="sendAI()">➤</button></div></div></div></div>`}
+function renderAI(){const hist=state.chatHistory||[];document.getElementById('content').innerHTML=`<div class="page">${homeBack()}<div class="row"><div><h1 class="page-title">AI học tập</h1><p class="muted">Hỏi bài, tạo 10 câu trắc nghiệm, lập kế hoạch, kiểm tra tiểu luận và phân tích năng lực.</p></div><span class="chip">🤖 Smart AI</span></div><div class="toolbar"><div class="tabs"><button class="active">Hỏi AI</button><button onclick="openQuizChoiceFlow()">Tạo 10 câu trắc nghiệm</button><button onclick="openPlanChoiceFlow()">Lập kế hoạch</button><button onclick="aiTool('essay')">Sửa tiểu luận</button><button onclick="aiTool('aiPercent')">Check % AI</button><button onclick="openAnalysisChoiceFlow()">Phân tích năng lực</button></div></div><div class="chat card"><aside class="history"><b>Lịch sử trò chuyện</b><div class="small muted" style="margin:7px 0">Được lưu tự động</div>${hist.slice().reverse().map((h,i)=>`<button class="${i===0?'active':''}" onclick="loadChat('${esc(h.id)}')">💬 ${esc(h.title)}</button>`).join('')||'<div class="small muted">Chưa có cuộc trò chuyện.</div>'}<div class="section-title"><h3>Gợi ý</h3></div><button onclick="openExplainFlow()">✨ Giải thích bài tập</button><button onclick="openQuizChoiceFlow()">✨ Tạo 10 câu trắc nghiệm</button><button onclick="openPlanChoiceFlow()">✨ Lập kế hoạch ôn tập</button><button onclick="openAnalysisChoiceFlow()">✨ Phân tích năng lực</button></aside><div class="chatmain"><div class="row"><div><b>Smart AI</b><div class="small muted">Môn hiện tại: <span id="aiCourseLabel">${currentSubject}</span></div></div><select id="aiCourse" onchange="currentSubject=this.value;document.getElementById('aiCourseLabel').textContent=this.value">${SUBJECTS.map(s=>`<option ${s===currentSubject?'selected':''}>${s}</option>`).join('')}</select></div><div class="messages" id="messages"><div class="bubble ai">Xin chào Ngân 👋 Mình là Smart AI trợ lý học tập. Bạn hãy chọn môn học, nhập câu hỏi hoặc chọn các gợi ý bên dưới để mở trợ lý chuyên sâu nhé!</div></div><div class="chips" style="margin:8px 0"><button class="chip" onclick="openExplainFlow()">💡 Giải thích bài này cho tôi</button><button class="chip" onclick="openQuizChoiceFlow()">📝 Tạo 10 câu trắc nghiệm</button><button class="chip" onclick="openPlanChoiceFlow()">📚 Lập kế hoạch học tập</button><button class="chip" onclick="openAnalysisChoiceFlow()">📊 Phân tích năng lực</button></div><div class="composer"><textarea id="aiInput" rows="2" placeholder="Ví dụ: Giải thích độ co giãn của cầu, bài tập hàm số..."></textarea><button class="btn" onclick="sendAI()">➤</button></div></div></div></div>`}
+
 function setPrompt(x){const e=document.getElementById('aiInput');if(e){e.value=x;e.focus()}}
+
+function renderMarkdown(text){
+  if(!text)return '';
+  let src=String(text);
+  const codeBlocks=[];
+  src=src.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g,(match,lang,code)=>{
+    const id='__CODE_BLOCK_'+codeBlocks.length+'__';
+    codeBlocks.push('<pre class="md-code"><div class="code-header">'+esc(lang||'code')+'</div><code>'+esc(code.trim())+'</code></pre>');
+    return id;
+  });
+  const inlineCodes=[];
+  src=src.replace(/`([^`\n]+)`/g,(match,code)=>{
+    const id='__INLINE_CODE_'+inlineCodes.length+'__';
+    inlineCodes.push('<code class="md-inline-code">'+esc(code)+'</code>');
+    return id;
+  });
+  function inlineFormat(str){
+    if(!str)return '';
+    let s=esc(str);
+    s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    s=s.replace(/__(.+?)__/g,'<strong>$1</strong>');
+    s=s.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+    s=s.replace(/_([^_\n]+)_/g,'<em>$1</em>');
+    return s;
+  }
+  const lines=src.split('\n');
+  const processedLines=[];
+  let tableBuffer=[];
+  function flushTable(){
+    if(tableBuffer.length===0)return;
+    if(tableBuffer.length>=2){
+      const headerLine=tableBuffer[0];
+      const sepLine=tableBuffer[1];
+      if(sepLine.includes('---')||sepLine.includes('-|-')||/\|[\s:-]+\|/.test(sepLine)){
+        const splitRow=line=>{
+          let parts=line.split('|').map(s=>s.trim());
+          if(parts[0]==='')parts.shift();
+          if(parts.length&&parts[parts.length-1]==='')parts.pop();
+          return parts;
+        };
+        const headers=splitRow(headerLine);
+        const rows=tableBuffer.slice(2).map(splitRow);
+        let tableHtml='<div class="md-table-wrap"><table class="md-table"><thead><tr>';
+        headers.forEach(h=>{tableHtml+='<th>'+inlineFormat(h)+'</th>';});
+        tableHtml+='</tr></thead><tbody>';
+        rows.forEach(r=>{
+          if(r.length===0)return;
+          tableHtml+='<tr>';
+          r.forEach(c=>{tableHtml+='<td>'+inlineFormat(c||'')+'</td>';});
+          tableHtml+='</tr>';
+        });
+        tableHtml+='</tbody></table></div>';
+        processedLines.push(tableHtml);
+        tableBuffer=[];
+        return;
+      }
+    }
+    tableBuffer.forEach(l=>processedLines.push(l));
+    tableBuffer=[];
+  }
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i].trim();
+    if(line.startsWith('|')&&line.endsWith('|')){
+      tableBuffer.push(line);
+    }else{
+      flushTable();
+      processedLines.push(lines[i]);
+    }
+  }
+  flushTable();
+  let out=[];
+  let inList=false;
+  let listType='ul';
+  function closeList(){
+    if(inList){out.push(listType==='ul'?'</ul>':'</ol>');inList=false;}
+  }
+  for(let rawLine of processedLines){
+    if(rawLine.startsWith('<div class="md-table-wrap">')){
+      closeList();out.push(rawLine);continue;
+    }
+    const trimmed=rawLine.trim();
+    if(!trimmed){closeList();continue;}
+    if(trimmed.startsWith('### ')){
+      closeList();out.push('<h4 class="md-h4">'+inlineFormat(trimmed.slice(4))+'</h4>');
+    }else if(trimmed.startsWith('## ')){
+      closeList();out.push('<h3 class="md-h3">'+inlineFormat(trimmed.slice(3))+'</h3>');
+    }else if(trimmed.startsWith('# ')){
+      closeList();out.push('<h2 class="md-h2">'+inlineFormat(trimmed.slice(2))+'</h2>');
+    }else if(trimmed.startsWith('> ')){
+      closeList();out.push('<blockquote class="md-quote">'+inlineFormat(trimmed.slice(2))+'</blockquote>');
+    }else if(/^[-*•]\s+/.test(trimmed)){
+      if(!inList||listType!=='ul'){closeList();out.push('<ul class="md-ul">');inList=true;listType='ul';}
+      out.push('<li>'+inlineFormat(trimmed.replace(/^[-*•]\s+/,''))+'</li>');
+    }else if(/^\d+\.\s+/.test(trimmed)){
+      if(!inList||listType!=='ol'){closeList();out.push('<ol class="md-ol">');inList=true;listType='ol';}
+      out.push('<li>'+inlineFormat(trimmed.replace(/^\d+\.\s+/,''))+'</li>');
+    }else{
+      closeList();out.push('<p class="md-p">'+inlineFormat(trimmed)+'</p>');
+    }
+  }
+  closeList();
+  let result=out.join('');
+  codeBlocks.forEach((b,i)=>{result=result.replace('__CODE_BLOCK_'+i+'__',b);});
+  inlineCodes.forEach((c,i)=>{result=result.replace('__INLINE_CODE_'+i+'__',c);});
+  return result;
+}
+
+window.msgStore=window.msgStore||{};
+
+function formatText(s,id){
+  if(!id)id='m_'+Math.random().toString(36).slice(2,9);
+  window.msgStore[id]=s;
+  const rendered=renderMarkdown(s);
+  return `<div class="ai-msg-body" id="render_${id}">${rendered}</div><div class="ai-msg-raw" id="raw_${id}" style="display:none;white-space:pre-wrap;font-family:Consolas,monospace;font-size:12px;background:#18322d;color:#edf8f4;padding:12px;border-radius:10px;margin:8px 0;line-height:1.5;overflow:auto;">${esc(s)}</div><div class="bubble-tools"><button onclick="toggleMsgView('${id}')" id="viewBtn_${id}">👁️ Xem dạng thô</button><button onclick="copyMsg('${id}')">📋 Sao chép</button></div>`;
+}
+
+function toggleMsgView(id){
+  const r=document.getElementById('render_'+id);
+  const raw=document.getElementById('raw_'+id);
+  const btn=document.getElementById('viewBtn_'+id);
+  if(!r||!raw)return;
+  if(raw.style.display==='none'){
+    raw.style.display='block';r.style.display='none';
+    if(btn)btn.innerHTML='✨ Xem định dạng Preview';
+  }else{
+    raw.style.display='none';r.style.display='block';
+    if(btn)btn.innerHTML='👁️ Xem dạng thô';
+  }
+}
+
+function copyMsg(id){
+  const text=window.msgStore[id]||'';
+  if(!text)return;
+  navigator.clipboard.writeText(text).then(()=>{toast('Đã sao chép vào bộ nhớ tạm!')}).catch(()=>{toast('Không thể sao chép')});
+}
+
+function openExplainFlow(){
+  const s=document.getElementById('aiCourse')?.value||currentSubject;
+  const samplesBySubject={
+    'Kinh tế vi mô':[
+      {label:'📐 Bài tập cân bằng cung - cầu',text:'Cho hàm cầu Qd = 120 - 2P và hàm cung Qs = 20 + 3P. Hãy tìm mức giá (P*) và lượng cân bằng (Q*) thị trường, sau đó tính thặng dư tiêu dùng (CS) và thặng dư sản xuất (PS).'},
+      {label:'📖 Giải thích hệ số co giãn',text:'Hãy giải thích ý nghĩa kinh tế khi độ co giãn của cầu theo giá PED = -1.5 và gợi ý doanh nghiệp nên tăng hay giảm giá để tối đa hóa doanh thu.'},
+      {label:'🔍 Chi phí & Lợi nhuận',text:'Phân biệt chi phí kinh tế và chi phí kế toán, cho ví dụ cụ thể về chi phí cơ hội của một sinh viên khi quyết định học đại học thay vì đi làm ngay.'}
+    ],
+    'Toán ứng dụng':[
+      {label:'📐 Ma trận & Hệ phương trình',text:'Giải hệ phương trình tuyến tính bằng phương pháp khử Gauss và tìm ma trận nghịch đảo.'},
+      {label:'📈 Cực trị hàm số',text:'Tìm cực trị có điều kiện của hàm f(x, y) = x^2 + 2y^2 với ràng buộc x + y = 10 bằng nhân tử Lagrange.'},
+      {label:'📊 Kỳ vọng & Phương sai',text:'Giải thích ý nghĩa và công thức tính kỳ vọng toán, phương sai của biến ngẫu nhiên rời rạc.'}
+    ],
+    'Tiếng Anh tổng quát':[
+      {label:'✍️ Sửa ngữ pháp & Diễn đạt',text:'Hãy sửa và giải thích các lỗi ngữ pháp/từ vựng trong đoạn văn sau: "I am very agree with this opinion because it is make students feel stressful."'},
+      {label:'🧠 Phân biệt thì (Tenses)',text:'Phân biệt cách dùng giữa thì Hiện tại hoàn thành (Present Perfect) và Quá khứ đơn (Past Simple) kèm ví dụ minh họa.'},
+      {label:'💡 Paraphrase câu văn',text:'Gợi ý 3 cách paraphrase câu sau cho bài thi viết học thuật: "Air pollution is becoming a serious problem in big cities."'}
+    ],
+    'Luật kinh doanh':[
+      {label:'⚖️ Tranh chấp hợp đồng',text:'Một công ty giao hàng chậm 5 ngày do mưa bão, bên mua đòi hủy hợp đồng và bồi thường. Trường hợp này có được coi là sự kiện bất khả kháng không?'},
+      {label:'🏢 Loại hình doanh nghiệp',text:'So sánh trách nhiệm tài sản giữa thành viên công ty TNHH và thành viên hợp danh trong công ty hợp danh.'},
+      {label:'📜 Điều khoản hợp đồng',text:'Giải thích ý nghĩa của thỏa thuận không tiết lộ (NDA) và các yếu tố bắt buộc cần có trong một hợp đồng thương mại.'}
+    ],
+    'Tư duy thiết kế':[
+      {label:'💡 How Might We (HMW)',text:'Từ quan sát sinh viên hay bỏ bữa sáng vì vội đi học, hãy đặt 3 câu hỏi How Might We để mở rộng ý tưởng giải pháp.'},
+      {label:'👥 Bản đồ thấu cảm (Empathy Map)',text:'Hướng dẫn các bước lập Empathy Map cho đối tượng tân sinh viên đại học trong tuần lễ định hướng.'},
+      {label:'🧪 Kiểm thử mẫu thử (Usability)',text:'Các bước chuẩn bị một buổi kiểm thử mẫu thử sản phẩm (Prototype Test) với 5 người dùng mục tiêu.'}
+    ]
+  };
+  const list=samplesBySubject[s]||samplesBySubject['Kinh tế vi mô'];
+  showModal(`<h2>💡 Trợ lý giải thích bài tập & kiến thức</h2><p class="muted">Môn học: <b style="color:var(--green)">${esc(s)}</b>. Chọn một câu hỏi mẫu bên dưới hoặc dán đề bài của bạn vào để Smart AI phân tích từng bước.</p><div style="margin:12px 0"><div class="small muted" style="margin-bottom:6px"><b>Gợi ý câu hỏi & bài tập mẫu (bấm để thử):</b></div>${list.map(item=>`<div class="flow-card" onclick="document.getElementById('explainInput').value=\`${esc(item.text)}\`"><span class="flow-card-icon">📌</span><div style="flex:1"><b>${esc(item.label)}</b><div class="small muted" style="margin-top:3px">${esc(item.text.slice(0,95))}...</div></div></div>`).join('')}</div><div style="margin-top:14px"><label class="small muted" style="display:block;margin-bottom:6px"><b>Đề bài hoặc nội dung bạn cần giải thích:</b></label><textarea id="explainInput" rows="4" style="width:100%" placeholder="Dán đề bài toán, bài tập kinh tế, đoạn văn tiếng Anh hoặc tình huống luật vào đây...">${esc(list[0].text)}</textarea></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><span class="small muted">⚡ AI sẽ tóm tắt đề, nêu công thức và giải thích chi tiết</span><div><button class="btn ghost" onclick="hideModal()">Hủy</button> <button class="btn" onclick="submitExplainFlow()">🚀 Gửi AI giải thích</button></div></div>`);
+}
+
+function submitExplainFlow(){
+  const val=document.getElementById('explainInput')?.value?.trim();
+  if(!val)return toast('Vui lòng nhập nội dung đề bài!');
+  hideModal();
+  const inp=document.getElementById('aiInput');
+  if(inp){inp.value=val;sendAI();}
+}
+
+function openQuizChoiceFlow(){
+  const s=document.getElementById('aiCourse')?.value||currentSubject;
+  showModal(`<h2>📝 10 câu trắc nghiệm môn ${esc(s)}</h2><p class="muted">Bạn muốn làm bài thi tương tác tính điểm hay nhờ AI soạn đề ôn tập vào khung chat?</p><div style="margin:16px 0"><div class="flow-card" onclick="hideModal();startQuiz('${esc(s)}','AI tạo 10 câu')"><span class="flow-card-icon">🎮</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Làm bài Quiz tương tác (Có chọn A/B/C/D & Chấm điểm)</b><div class="small muted" style="margin-top:4px">Có đồng hồ bấm giờ 30s, kiểm tra đúng/sai và nhận lời giải chi tiết sau mỗi câu.</div></div><span class="btn secondary" style="padding:6px 12px;font-size:12px">Chơi ngay →</span></div><div class="flow-card" onclick="hideModal();submitAiQuizPrompt('${esc(s)}')"><span class="flow-card-icon">🤖</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Nhờ Smart AI soạn bộ đề 10 câu vào đoạn chat</b><div class="small muted" style="margin-top:4px">AI sẽ tạo 10 câu hỏi chia riêng biệt từng câu, có 4 phương án, đáp án và giải thích để bạn lưu lại ôn thi.</div></div><span class="btn" style="padding:6px 12px;font-size:12px">Soạn đề →</span></div></div>`);
+}
+
+function submitAiQuizPrompt(subject){
+  const inp=document.getElementById('aiInput');
+  if(inp){
+    inp.value=`Hãy tạo 10 câu hỏi trắc nghiệm môn ${subject} cho sinh viên đại học. Định dạng rõ ràng từng câu: Câu hỏi, 4 phương án A/B/C/D, đáp án đúng và giải thích chi tiết, không dùng bảng ngang.`;
+    sendAI();
+  }
+}
+
+function openPlanChoiceFlow(){
+  const s=document.getElementById('aiCourse')?.value||currentSubject;
+  showModal(`<h2>📚 Lập kế hoạch học tập môn ${esc(s)}</h2><p class="muted">Lựa chọn hình thức kế hoạch phù hợp với mục tiêu hiện tại của bạn:</p><div style="margin:16px 0"><div class="flow-card" onclick="hideModal();openPlan()"><span class="flow-card-icon">📅</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Lộ trình học theo phương pháp khoa học (Mẫu chuẩn)</b><div class="small muted" style="margin-top:4px">Phân chia khung giờ học 7:15–10:00, chiều và tối kết hợp Pomodoro, Feynman, Active Recall.</div></div><span class="btn secondary" style="padding:6px 12px;font-size:12px">Xem mẫu →</span></div><div class="flow-card" onclick="hideModal();submitAiPlanPrompt('${esc(s)}')"><span class="flow-card-icon">🎯</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Nhờ AI lập kế hoạch ôn thi cấp tốc 7 ngày (Cá nhân hóa)</b><div class="small muted" style="margin-top:4px">Smart AI sẽ phân bổ từng ngày cần ôn chương nào, làm bao nhiêu bài tập để đạt điểm A.</div></div><span class="btn" style="padding:6px 12px;font-size:12px">Lập lịch →</span></div></div>`);
+}
+
+function submitAiPlanPrompt(subject){
+  const inp=document.getElementById('aiInput');
+  if(inp){
+    inp.value=`Hãy lập một kế hoạch ôn thi cấp tốc trong 7 ngày môn ${subject} dành cho sinh viên đại học, chia cụ thể từng ngày cần học lý thuyết nào, dạng bài tập gì và mẹo nhớ lâu.`;
+    sendAI();
+  }
+}
+
+function openAnalysisChoiceFlow(){
+  const s=document.getElementById('aiCourse')?.value||currentSubject;
+  showModal(`<h2>📊 Phân tích năng lực học tập</h2><p class="muted">Đánh giá mức độ nắm vững kiến thức môn ${esc(s)} và các môn học khác:</p><div style="margin:16px 0"><div class="flow-card" onclick="hideModal();openAnalysis()"><span class="flow-card-icon">📈</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Xem bảng đánh giá năng lực 5 môn (Đồ thị & Tỷ lệ %)</b><div class="small muted" style="margin-top:4px">Thống kê điểm số từ game, bài tập và lịch sử học tập cá nhân.</div></div><span class="btn secondary" style="padding:6px 12px;font-size:12px">Mở bảng →</span></div><div class="flow-card" onclick="hideModal();submitAiAnalysisPrompt('${esc(s)}')"><span class="flow-card-icon">🩺</span><div style="flex:1"><b style="font-size:15px;color:var(--green2)">Nhờ Smart AI chẩn đoán & tư vấn phương pháp cải thiện</b><div class="small muted" style="margin-top:4px">Phân tích các lỗi sai sinh viên hay mắc phải ở môn ${esc(s)} và cách khắc phục hiệu quả nhất.</div></div><span class="btn" style="padding:6px 12px;font-size:12px">Tư vấn ngay →</span></div></div>`);
+}
+
+function submitAiAnalysisPrompt(subject){
+  const inp=document.getElementById('aiInput');
+  if(inp){
+    inp.value=`Hãy phân tích những khó khăn và lỗi sai phổ biến nhất của sinh viên khi học môn ${subject}, đồng thời đưa ra 3 phương pháp học cụ thể để bứt phá điểm số môn này.`;
+    sendAI();
+  }
+}
+
 async function callAI(message,course=currentSubject){const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,course})});const d=await r.json();if(!r.ok)throw new Error(d.error||'AI unavailable');return d.answer||''}
-async function sendAI(){const inp=document.getElementById('aiInput');if(!inp||!inp.value.trim())return;const q=inp.value.trim(),course=document.getElementById('aiCourse')?.value||currentSubject,box=document.getElementById('messages');box.insertAdjacentHTML('beforeend',`<div class="bubble me">${esc(q)}</div><div class="bubble ai" id="typing">⏳ Smart AI đang suy nghĩ...</div>`);inp.value='';box.scrollTop=box.scrollHeight;let ans;try{ans=await callAI(q,course)}catch{ans=localAI(q,course)}document.getElementById('typing')?.remove();box.insertAdjacentHTML('beforeend',`<div class="bubble ai"><b>Smart AI:</b><br>${formatText(ans)}</div>`);const id=Date.now().toString();state.chatHistory.push({id,title:q.slice(0,42),date:new Date().toISOString(),course,question:q,answer:ans});save();box.scrollTop=box.scrollHeight;toast('Đã lưu lịch sử trò chuyện')}
-function formatText(s){return esc(s).replace(/\n/g,'<br>')}
+
+async function sendAI(){const inp=document.getElementById('aiInput');if(!inp||!inp.value.trim())return;const q=inp.value.trim(),course=document.getElementById('aiCourse')?.value||currentSubject,box=document.getElementById('messages');box.insertAdjacentHTML('beforeend',`<div class="bubble me">${esc(q)}</div><div class="bubble ai" id="typing">⏳ Smart AI đang suy nghĩ...</div>`);inp.value='';box.scrollTop=box.scrollHeight;let ans;try{ans=await callAI(q,course)}catch{ans=localAI(q,course)}document.getElementById('typing')?.remove();const id=Date.now().toString();box.insertAdjacentHTML('beforeend',`<div class="bubble ai"><b>Smart AI:</b><br>${formatText(ans, id)}</div>`);state.chatHistory.push({id,title:q.slice(0,42),date:new Date().toISOString(),course,question:q,answer:ans});save();box.scrollTop=box.scrollHeight;toast('Đã lưu lịch sử trò chuyện')}
+
 function localAI(q,course){let x=q.toLowerCase();if(x.includes('trắc nghiệm')||x.includes('10 câu'))return `Mình có thể tạo 10 câu theo môn ${course}, mỗi câu gồm A, B, C, D và đáp án. Hãy bấm “Tạo 10 câu trắc nghiệm” để vào chế độ làm bài.`;if(x.includes('kế hoạch'))return `Kế hoạch ${course}: 7:15–10:00 học nội dung mới; 14:00–15:00 luyện bài; 20:00–20:30 ôn bằng active recall. Chia phiên 25–50 phút, nghỉ 5–10 phút.`;if(course==='Kinh tế vi mô'&&x.includes('cầu'))return 'Cầu thể hiện lượng hàng hóa người mua sẵn sàng và có khả năng mua ở các mức giá khác nhau. Khi các yếu tố khác không đổi, giá tăng thường làm lượng cầu giảm.';if(course==='Toán ứng dụng'&&x.includes('đạo hàm'))return 'Đạo hàm biểu diễn tốc độ thay đổi tức thời của hàm số. Khi f′(x)>0 trên một khoảng, f thường tăng trên khoảng đó.';if(course==='Tiếng Anh tổng quát'&&x.includes('thì'))return 'Hãy bắt đầu bằng dấu hiệu nhận biết và cấu trúc. Ví dụ hiện tại hoàn thành dùng have/has + V3, thường liên quan trải nghiệm hoặc hành động bắt đầu trong quá khứ còn liên quan hiện tại.';if(course==='Luật kinh doanh')return 'Khi học Luật kinh doanh, hãy tách vấn đề thành chủ thể – quyền/nghĩa vụ – điều kiện áp dụng – hậu quả pháp lý và dùng sơ đồ để ghi nhớ.';return `Mình đang ở chế độ demo nên chưa kết nối máy chủ AI. Với ${course}, hãy đặt câu hỏi cụ thể; khi cấu hình OPENAI_API_KEY, Smart AI sẽ trả lời bằng mô hình AI thật.`}
-function loadChat(id){const h=state.chatHistory.find(x=>x.id===id);if(!h)return;document.getElementById('messages').innerHTML=`<div class="bubble me">${esc(h.question)}</div><div class="bubble ai"><b>Smart AI:</b><br>${formatText(h.answer)}</div>`;currentSubject=h.course;document.getElementById('aiCourse').value=h.course}
+
+function loadChat(id){const h=state.chatHistory.find(x=>x.id===id);if(!h)return;document.getElementById('messages').innerHTML=`<div class="bubble me">${esc(h.question)}</div><div class="bubble ai"><b>Smart AI:</b><br>${formatText(h.answer, h.id)}</div>`;currentSubject=h.course;const cSel=document.getElementById('aiCourse');if(cSel)cSel.value=h.course;const cLbl=document.getElementById('aiCourseLabel');if(cLbl)cLbl.textContent=h.course}
 function aiTool(type){if(type==='quiz')openAIQuiz();if(type==='plan')openPlan();if(type==='essay')openEssay();if(type==='aiPercent')openAIPercent();if(type==='analysis')openAnalysis()}
 function openAIQuiz(){const subject=document.getElementById('aiCourse')?.value||currentSubject;startQuiz(subject,'AI tạo 10 câu')}
 function openPlan(){const subject=document.getElementById('aiCourse')?.value||currentSubject;const plans={
@@ -801,6 +1169,6 @@ function gameRewardV23(type,score,total){const ratio=total?score/total:1;const c
 function renderInit(){hydrateMascot();renderNavAnd();go('home')}
 applyTheme();renderInit();scheduleNotifications();
 </script>
-<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=33").catch(()=>{}))}</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js?v=34").catch(()=>{}))}</script>
 </body>
 </html>
