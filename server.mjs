@@ -111,9 +111,17 @@ async function chat(req,res){
 }
 
 function serveStatic(req,res){
-  let pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(pathname==='/'||pathname==='')pathname='/index.html';
-  const target=path.resolve(__dirname,'.'+pathname);if(!target.startsWith(path.resolve(__dirname)))return send(res,403,'Forbidden','text/plain; charset=utf-8');
-  fs.stat(target,(err,st)=>{if(err||!st.isFile())return send(res,404,'Not found','text/plain; charset=utf-8');const ext=path.extname(target).toLowerCase();res.writeHead(200,{'Content-Type':mime[ext]||'application/octet-stream','Cache-Control':'no-cache'});fs.createReadStream(target).pipe(res)})
+  let pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+  if(pathname==='/'||pathname==='')pathname='/index.html';
+  if(pathname==='/favicon.ico')pathname='/assets/smart-student-icon.png';
+  const target=path.resolve(__dirname,'.'+pathname);
+  if(!target.startsWith(path.resolve(__dirname)))return send(res,403,'Forbidden','text/plain; charset=utf-8');
+  fs.stat(target,(err,st)=>{
+    if(err||!st.isFile())return send(res,404,'Not found','text/plain; charset=utf-8');
+    const ext=path.extname(target).toLowerCase();
+    res.writeHead(200,{'Content-Type':mime[ext]||'application/octet-stream','Cache-Control':'no-cache'});
+    fs.createReadStream(target).pipe(res);
+  });
 }
 
 const server=http.createServer(async(req,res)=>{
@@ -135,10 +143,7 @@ const server=http.createServer(async(req,res)=>{
     const openaiKey = process.env.OPENAI_API_KEY || '';
     const provider = groqKey ? 'groq' : (openaiKey ? 'openai' : 'none');
     const model = groqKey ? (process.env.GROQ_MODEL || 'openai/gpt-oss-120b') : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
-    let dirFiles = [], cwdFiles = [];
-    try { dirFiles = fs.readdirSync(__dirname); } catch (e) { dirFiles = [e.message]; }
-    try { cwdFiles = fs.readdirSync(process.cwd()); } catch (e) { cwdFiles = [e.message]; }
-    return json(res,200,{ok:true,aiConfigured:Boolean(groqKey||openaiKey),provider,model,__dirname,cwd:process.cwd(),dirFiles,cwdFiles});
+    return json(res,200,{ok:true,aiConfigured:Boolean(groqKey||openaiKey),provider,model});
   }
   if(req.method==='POST'&&req.url==='/api/chat')return chat(req,res);
   if(req.method==='GET'||req.method==='HEAD')return serveStatic(req,res);
